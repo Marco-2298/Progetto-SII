@@ -51,3 +51,36 @@ Ranking tramite BM25 e pesi dinamici
 Output ordinato dei profili giocatori più compatibili
 
 Codice nella cartella recommender/.
+
+
+
+-Esecuzione del progetto-
+
+1) Attivare ambiente virtuale
+2) Installa i requirements.txt
+3) python -m pip install ipykernel
+
+-
+
+Passo 2 — Crea ambiente con Python 3.11
+Nel terminale della cartella del progetto:
+python3.11 -m venv env
+Se non va, prova:
+python3 -m venv env
+(o anche)
+py -3.11 -m venv env
+Passo 3 — Attiva l’ambiente
+Mac / Linux:
+source env/bin/activate
+Windows:
+env\Scripts\activate
+Vedrai (env) comparire.
+Passo 4 — Installa tutto
+pip install --upgrade pip
+pip install pandas numpy matplotlib seaborn jupyter ipykernel
+Passo 5 — Seleziona il kernel in VS Code
+Apri notebook .ipynb
+In alto a destra → click su kernel → Select Kernel
+Scegli quello che termina con:
+/env/bin/python
+🔥 A questo punto il tuo notebook funzionerà al 100%.

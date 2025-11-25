@@ -1,56 +1,195 @@
-🏀 SII – NBA Draft Analysis + Scout Recommender System
+🔵 INTRODUZIONE AL PROGETTO
 
-Studente: Marco D’Albis
-Anno: 2024/2025
-Corso: Sistemi Intelligenti per Internet
+L’obiettivo del progetto è analizzare retrospettivamente i Draft NBA utilizzando un dataset storico contenente tutte le scelte dal 1947 al 2024, includendo statistiche di carriera aggiornate per ogni giocatore.
 
-📌 Obiettivi del progetto
+Il fine è studiare:
 
-Il progetto è articolato in due parti:
+quali draft hanno generato il maggior valore complessivo,
 
-🟦 Parte 1 — Analisi dei Draft NBA (1989–2021)
+quali college producono più talenti,
 
-Analisi retrospettiva dei draft NBA tramite dataset pubblico:
+come classificare i giocatori in categorie qualitative,
 
-Valutazione del valore totale generato da ogni classe (Win Shares, VORP)
+la relazione tra posizione di scelta e longevità,
 
-Identificazione dei college più produttivi
+l’evoluzione delle prestazioni dei giocatori nei primi anni di carriera.
 
-Classificazione dei giocatori in tier:
+Successivamente, il lavoro sarà esteso con una seconda parte dedicata a un sistema intelligente basato sui concetti del corso, per assistere uno scout NBA nella ricerca del profilo ideale di giocatore tramite un motore di ricerca testuale e un recommender content-based.
 
-⭐ Star
+PARTE 1 — ANALISI STORICA DEI DRAFT NBA
 
-🔥 Starter
+(Basata su un unico dataset storico 1947–2024)
 
-🔄 Role player
+📌 Step 1 — Esplorazione iniziale del dataset
 
-💀 Flop
+Caricamento del dataset CSV contenente tutte le scelte NBA dal 1947 al 2024.
 
-Analisi della longevità media in base alla posizione di scelta
+Verifica dei campi disponibili (Pick, Player, College, WS, VORP, Seasons, Ruolo…).
 
-Focus specifico sul Draft 2021: aspettative vs realtà
+Controllo dei valori mancanti, dei tipi di dato e consistenza generale.
 
-Gli script/notebook relativi sono nella cartella analysis/.
+📌 Step 2 — Pulizia e normalizzazione
 
-🟩 Parte 2 — Scout Recommender System (progetto SII)
+Uniformazione dei nomi delle colonne.
 
-Costruzione di un sistema di raccomandazione + motore di ricerca testuale per supportare uno scout NBA.
+Gestione dei valori nulli per WS, College, Seasons, ecc.
 
-Esempio di input:
+Creazione di colonne derivate utili (es. fascia di pick: Top10, FirstRound, SecondRound).
 
-“Cerco una guardia tiratrice con ottime percentuali da 3, buon FT%, buon rimbalzo offensivo e difensivo.”
+📌 Step 3 — Analisi del valore generato dalle classi di Draft
 
-Funzionalità integrate:
+Obiettivo: capire quali anni sono stati più produttivi.
 
-Indicizzazione dei giocatori come documenti (IR)
+Calcolo del valore totale generato per anno (WS e VORP aggregati).
 
-Text parsing della query naturale
+Visualizzazione delle migliori e peggiori classi storiche.
 
-Ranking tramite BM25 e pesi dinamici
+Discussione di draft particolarmente impattanti o deludenti.
 
-Output ordinato dei profili giocatori più compatibili
+📌 Step 4 — Analisi dei college più produttivi
 
-Codice nella cartella recommender/.
+Obiettivo: individuare quali università tendono a produrre giocatori di maggior impatto.
+
+Aggregazione delle Win Shares per college.
+
+Classifica dei 20 college più produttivi.
+
+Interpretazione dei risultati (programmi NCAA più efficaci).
+
+📌 Step 5 — Classificazione qualitativa dei giocatori (Tier Analysis)
+
+Obiettivo: categorizzare i giocatori sulla base dell’impatto reale.
+
+Creazione di una colonna Tier con valori ad esempio:
+
+⭐ Star (WS ≥ 50)
+
+🔥 Starter (WS 20–49)
+
+🔄 Role Player (WS 5–19)
+
+💀 Flop (WS < 5)
+
+Analisi:
+
+distribuzione dei tier nel dataset,
+
+distribuzione dei tier per decade o per posizione di pick.
+
+📌 Step 6 — Analisi della longevità in base al pick
+
+Obiettivo: capire se la posizione nel draft influisce sulla lunghezza della carriera.
+
+Calcolo della media delle stagioni giocate per ogni pick.
+
+Confronto tra gruppi:
+
+Top 10
+
+Fine primo giro
+
+Secondo giro
+
+Undrafted
+
+Interpretazione dei risultati (la scelta alta garantisce una carriera più lunga?).
+
+📌 Step 7 — Analisi evolutiva dei giocatori: Rookie → Sophomore
+
+Poiché le statistiche del dataset sono aggiornate al 2024 e includono anche anni futuri dei giocatori recenti, una previsione “hhistorica” non è metodologicamente valida.
+
+Tuttavia, è possibile analizzare come i giocatori migliorano dal primo al secondo anno, un insight molto utile.
+
+Passi:
+
+Filtrare giocatori con almeno 2 stagioni (Seasons >= 2).
+
+Confrontare WS, PTS, AST, REB fra anno da rookie e sophomore.
+
+Identificare i “miglioratori” e gli “stagnanti” per ruolo o per fascia di pick.
+
+📌 Step 8 — Sintesi e discussione dei risultati
+
+Identificazione dei migliori draft all-time.
+
+College con maggiore impatto storico.
+
+Percentuale di flop vs star per generazione.
+
+Relazione tra pick → longevità → probabilità di diventare star.
+
+Miglioratori più significativi dopo il primo anno (rookie development study).
+
+🔶 PARTE 2 — SISTEMA INTELLIGENTE PER TALENT SCOUT NBA
+
+(Questa è la parte in piena linea con Sistemi Intelligenti per Internet)
+
+🎯 Obiettivo della Parte 2
+
+Sviluppare un motore di ricerca + sistema di raccomandazione che assista un direttore sportivo o scout nel trovare il giocatore ideale in base a una descrizione testuale.
+
+Esempio input:
+
+"Cerco una guardia tiratrice con ottime percentuali da 3, buon FT%, forte rimbalzista offensivo."
+
+Il sistema deve restituire un ranking dei giocatori più simili al profilo richiesto.
+
+📌 Step A — Preparazione del corpus
+
+Trasformare ogni giocatore in un “documento testuale”:
+“Guardia, 40% da 3, 88% FT, 6 rimbalzi, buon difensore…”
+
+Creazione del corpus JSON o DataFrame da indicizzare.
+
+📌 Step B — Indicizzazione (Information Retrieval)
+
+Utilizzo di BM25 o TF-IDF per l’indicizzazione dei profili.
+
+Costruzione di un indice persistente.
+
+📌 Step C — Analisi della query naturale
+
+Parsing testuale dell’input utente.
+
+Mappatura delle parole chiave su attributi giocatore:
+
+“tiratore” → 3P%
+
+“rimbalzista” → REB
+
+“playmaker” → AST
+
+“difensore” → Defensive WS
+
+Applicazione di pesi alle feature.
+
+📌 Step D — Ranking dei giocatori
+
+Similarità tra query e documenti indicizzati → ranking finale.
+
+Output: top‐N giocatori più compatibili.
+
+Possibilità di spiegazione: “questo giocatore è top-1 perché…”
+
+📌 Step E — Interfaccia da Talent Scout
+
+Interfaccia a riga di comando o piccola app Python.
+
+L’utente inserisce un profilo testuale.
+
+Il sistema restituisce la “shortlist” dei giocatori ideali.
+
+📌 Step F — Conclusioni
+
+Confronto tra Parte 1 (analisi scientifica) e Parte 2 (sistema intelligente).
+
+Possibili estensioni:
+
+integrazione con LLM per interpretazioni più evolute,
+
+sistema ibrido tra content-based e rule-based,
+
+profili per team (non solo per singoli giocatori).
 
 
 
@@ -84,3 +223,11 @@ In alto a destra → click su kernel → Select Kernel
 Scegli quello che termina con:
 /env/bin/python
 🔥 A questo punto il tuo notebook funzionerà al 100%.
+
+
+
+
+- PDF Riferimento per lo svolgimento del progetto -
+SII_TXPR 1,2 per motori di ricerca e IR
+SII_CRFE_3 1,2 Per search engines web search, indici e BM25, Ranking
+Recommender System 1,2,3,4,5 

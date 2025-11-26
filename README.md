@@ -94,19 +94,48 @@ Undrafted
 
 Interpretazione dei risultati (la scelta alta garantisce una carriera più lunga?).
 
-📌 Step 7 — Analisi evolutiva dei giocatori: Rookie → Sophomore
+📌 Step 7 — Modello predittivo dell’impatto atteso (Expected Win Shares)
 
-Poiché le statistiche del dataset sono aggiornate al 2024 e includono anche anni futuri dei giocatori recenti, una previsione “hhistorica” non è metodologicamente valida.
+Nella parte finale del progetto è stata introdotta una componente di **modellazione predittiva**, in linea con il programma del corso (metodi supervisionati, train/test split, valutazione del modello).
 
-Tuttavia, è possibile analizzare come i giocatori migliorano dal primo al secondo anno, un insight molto utile.
+L’obiettivo è stimare, per ogni giocatore, un **valore atteso di impatto di carriera** (in termini di Win Shares), dato ciò che è noto al momento del draft, e confrontarlo con il valore effettivamente osservato. In questo modo è possibile individuare:
 
-Passi:
+- i giocatori che hanno **superato nettamente le aspettative** (overperformer),
+- quelli che hanno **deluso** rispetto alla loro posizione nel draft (underperformer o “bust”).
 
-Filtrare giocatori con almeno 2 stagioni (Seasons >= 2).
+In pratica:
 
-Confrontare WS, PTS, AST, REB fra anno da rookie e sophomore.
+1. **Selezione delle feature**  
+   Sono state utilizzate come variabili esplicative (input del modello) alcune tra le seguenti informazioni, disponibili al momento del draft:
+   - posizione di pick (`Pick`),
+   - fascia di pick (`PickBand`, es. Top10 / FirstRound / SecondRound),
+   - anno del draft (`DraftYear`),
+   - tipo di provenienza (`College`, con categorie come High School, NCAA, Overseas, ecc.).
 
-Identificare i “miglioratori” e gli “stagnanti” per ruolo o per fascia di pick.
+2. **Definizione del target**  
+   Il target da predire è la **Win Shares di carriera** (`WS_clean`), considerando solo i giocatori con valore calcolabile (escludendo i casi marcati come `-100` nel preprocessing).
+
+3. **Train/Test split temporale**  
+   Per simulare uno scenario realistico, il modello viene addestrato sui **draft storici** (es. 1947–2010) e valutato su draft più recenti (es. 2011–2020).  
+   In questo modo si verifica la capacità del modello di generalizzare su “anni futuri”, non visti in fase di training.
+
+4. **Modelli utilizzati e valutazione**  
+   Come modello di base viene considerata una regressione semplice (es. Linear Regression), eventualmente affiancata da un modello non lineare (es. RandomForestRegressor), con valutazione tramite metriche come:
+   - **MAE (Mean Absolute Error)**
+   - **RMSE (Root Mean Squared Error)**
+
+5. **Expected vs Real WS e analisi degli scostamenti**  
+   Una volta addestrato il modello, per ogni giocatore nel test set viene calcolato un valore di **Expected_WS**.  
+   Lo scostamento rispetto al valore reale viene misurato come:
+   \[
+   \Delta = WS_{reale} - WS_{atteso}
+   \]
+   Ordinando i giocatori in base a Δ si ottengono:
+   - una lista di **overperformer** (Δ ≫ 0), cioè giocatori che hanno reso molto più delle aspettative legate alla loro posizione nel draft,
+   - una lista di **underperformer** (Δ ≪ 0), ovvero scelte alte che non hanno ripagato l’investimento.
+
+Questa analisi collega i risultati empirici sull’NBA Draft con un approccio tipico dei **sistemi intelligenti**: si costruisce un modello predittivo basato sui dati storici e si usano i residui (errore di predizione) per interpretare la qualità delle decisioni di draft nel tempo.
+
 
 📌 Step 8 — Sintesi e discussione dei risultati
 

@@ -18,9 +18,7 @@ Successivamente, il lavoro sarà esteso con una seconda parte dedicata a un sist
 
 PARTE 1 — ANALISI STORICA DEI DRAFT NBA
 
-(Basata su un unico dataset storico 1947–2024)
-
-📌 Step 1 — Esplorazione iniziale del dataset
+📌 Step 1 — Esplorazione e normalizzazione del dataset
 
 Caricamento del dataset CSV contenente tutte le scelte NBA dal 1947 al 2024.
 
@@ -28,15 +26,13 @@ Verifica dei campi disponibili (Pick, Player, College, WS, VORP, Seasons, Ruolo�
 
 Controllo dei valori mancanti, dei tipi di dato e consistenza generale.
 
-📌 Step 2 — Pulizia e normalizzazione
-
 Uniformazione dei nomi delle colonne.
 
 Gestione dei valori nulli per WS, College, Seasons, ecc.
 
 Creazione di colonne derivate utili (es. fascia di pick: Top10, FirstRound, SecondRound).
 
-📌 Step 3 — Analisi del valore generato dalle classi di Draft
+📌 Step 2 — Analisi del valore generato dalle classi di Draft
 
 Obiettivo: capire quali anni sono stati più produttivi.
 
@@ -46,7 +42,7 @@ Visualizzazione delle migliori e peggiori classi storiche.
 
 Discussione di draft particolarmente impattanti o deludenti.
 
-📌 Step 4 — Analisi dei college più produttivi
+📌 Step 3 — Analisi dei college più produttivi
 
 Obiettivo: individuare quali università tendono a produrre giocatori di maggior impatto.
 
@@ -56,7 +52,7 @@ Classifica dei 20 college più produttivi.
 
 Interpretazione dei risultati (programmi NCAA più efficaci).
 
-📌 Step 5 — Classificazione qualitativa dei giocatori (Tier Analysis)
+📌 Step 4 — Classificazione qualitativa dei giocatori (Tier Analysis)
 
 Obiettivo: categorizzare i giocatori sulla base dell’impatto reale.
 
@@ -76,7 +72,7 @@ distribuzione dei tier nel dataset,
 
 distribuzione dei tier per decade o per posizione di pick.
 
-📌 Step 6 — Analisi della longevità in base al pick
+📌 Step 5 — Analisi della longevità in base al pick
 
 Obiettivo: capire se la posizione nel draft influisce sulla lunghezza della carriera.
 
@@ -94,7 +90,7 @@ Undrafted
 
 Interpretazione dei risultati (la scelta alta garantisce una carriera più lunga?).
 
-📌 Step 7 — Modello predittivo dell’impatto atteso (Expected Win Shares)
+📌 Step 6 — Modello predittivo dell’impatto atteso (Expected Win Shares)
 
 Nella parte finale del progetto è stata introdotta una componente di **modellazione predittiva**, in linea con il programma del corso (metodi supervisionati, train/test split, valutazione del modello).
 
@@ -135,19 +131,6 @@ In pratica:
    - una lista di **underperformer** (Δ ≪ 0), ovvero scelte alte che non hanno ripagato l’investimento.
 
 Questa analisi collega i risultati empirici sull’NBA Draft con un approccio tipico dei **sistemi intelligenti**: si costruisce un modello predittivo basato sui dati storici e si usano i residui (errore di predizione) per interpretare la qualità delle decisioni di draft nel tempo.
-
-
-📌 Step 8 — Sintesi e discussione dei risultati
-
-Identificazione dei migliori draft all-time.
-
-College con maggiore impatto storico.
-
-Percentuale di flop vs star per generazione.
-
-Relazione tra pick → longevità → probabilità di diventare star.
-
-Miglioratori più significativi dopo il primo anno (rookie development study).
 
 🔶 PARTE 2 — SISTEMA INTELLIGENTE PER TALENT SCOUT NBA
 

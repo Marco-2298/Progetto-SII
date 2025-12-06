@@ -1,4 +1,4 @@
-🔵 INTRODUZIONE AL PROGETTO
+# 🔵 PROGETTO
 
 L’obiettivo del progetto è analizzare retrospettivamente i Draft NBA utilizzando un dataset storico contenente tutte le scelte dal 1947 al 2024, includendo statistiche di carriera aggiornate per ogni giocatore.
 
@@ -16,123 +16,94 @@ l’evoluzione delle prestazioni dei giocatori nei primi anni di carriera.
 
 Successivamente, il lavoro sarà esteso con una seconda parte dedicata a un sistema intelligente basato sui concetti del corso, per assistere uno scout NBA nella ricerca del profilo ideale di giocatore tramite un motore di ricerca testuale e un recommender content-based.
 
-PARTE 1 — ANALISI STORICA DEI DRAFT NBA
+## PARTE 1 — ANALISI STORICA DEI DRAFT NBA
 
-📌 Step 1 — Esplorazione e normalizzazione del dataset
+### 📘 Notebook 1 — Data Exploration & Cleaning
 
-Caricamento del dataset CSV contenente tutte le scelte NBA dal 1947 al 2024.
+Obiettivo: costruire un dataset coerente e utilizzabile per analisi e modelli.
 
-Verifica dei campi disponibili (Pick, Player, College, WS, VORP, Seasons, Ruolo…).
+Operazioni principali:
 
-Controllo dei valori mancanti, dei tipi di dato e consistenza generale.
+Esplorazione del dataset originale 1947–2024.
 
-Uniformazione dei nomi delle colonne.
+Gestione dei valori mancanti (college, pick forfeit, giocatori mai esorditi).
 
-Gestione dei valori nulli per WS, College, Seasons, ecc.
+Normalizzazione delle statistiche:
 
-Creazione di colonne derivate utili (es. fascia di pick: Top10, FirstRound, SecondRound).
+3P% pre-1979 → -1
 
-📌 Step 2 — Analisi del valore generato dalle classi di Draft
+metriche avanzate mancanti → -100 + flag _available
 
-Obiettivo: capire quali anni sono stati più produttivi.
+debutto NBA → reset statistiche base.
 
-Calcolo del valore totale generato per anno (WS e VORP aggregati).
+Creazione colonne utili: PickBand, Status, ecc.
+Output finale → drafted_cleaned.csv.
 
-Visualizzazione delle migliori e peggiori classi storiche.
+### 📘 Notebook 2 — Value Analysis (WS & VORP)
 
-Discussione di draft particolarmente impattanti o deludenti.
+Obiettivo: analizzare il valore prodotto dalle Draft Class NBA.
 
-📌 Step 3 — Analisi dei college più produttivi
+Attività:
 
-Obiettivo: individuare quali università tendono a produrre giocatori di maggior impatto.
+Aggregazione annuale di Win Shares e VORP.
 
-Aggregazione delle Win Shares per college.
+Identificazione di best e worst draft class.
 
-Classifica dei 20 college più produttivi.
+Grafici di andamento per WS e VORP nel tempo.
 
-Interpretazione dei risultati (programmi NCAA più efficaci).
+### 📘 Notebook 3 — College Analysis
 
-📌 Step 4 — Classificazione qualitativa dei giocatori (Tier Analysis)
+Obiettivo: valutare la capacità dei college di produrre talento NBA.
 
-Obiettivo: categorizzare i giocatori sulla base dell’impatto reale.
+Attività:
 
-Creazione di una colonna Tier con valori ad esempio:
+Somma delle WS per college.
 
-⭐ Star (WS ≥ 50)
+Classifica dei Top 20 college.
 
-🔥 Starter (WS 20–49)
+Per i migliori 3 college → estrazione dei migliori 5 giocatori per WS.
 
-🔄 Role Player (WS 5–19)
+### 📘 Notebook 4 — Player Quality & Career Analysis
 
-💀 Flop (WS < 5)
+Obiettivo: classificare i giocatori e studiare l’evoluzione della carriera.
 
-Analisi:
+Attività:
 
-distribuzione dei tier nel dataset,
+Creazione della colonna Tier:
 
-distribuzione dei tier per decade o per posizione di pick.
+Star / Starter / Role Player / Flop / N/A.
 
-📌 Step 5 — Analisi della longevità in base al pick
+Distribuzione dei Tier globalmente e per decade.
 
-Obiettivo: capire se la posizione nel draft influisce sulla lunghezza della carriera.
+Longevità media della carriera in funzione del pick.
 
-Calcolo della media delle stagioni giocate per ogni pick.
+Confronto tra gruppi: Top10, First Round, Second Round.
 
-Confronto tra gruppi:
+### 📘 Notebook 5 — Predictive Model (Expected WS)
 
-Top 10
+Obiettivo: predire l’impatto di carriera al momento del Draft.
 
-Fine primo giro
+Modelli utilizzati:
 
-Secondo giro
+Linear Regression (baseline su Pick + DraftYear).
 
-Undrafted
+Random Forest con One-Hot Encoding (modello avanzato).
 
-Interpretazione dei risultati (la scelta alta garantisce una carriera più lunga?).
+Output del modello:
 
-📌 Step 6 — Modello predittivo dell’impatto atteso (Expected Win Shares)
+Expected WS → Win Shares attese.
 
-Nella parte finale del progetto è stata introdotta una componente di **modellazione predittiva**, in linea con il programma del corso (metodi supervisionati, train/test split, valutazione del modello).
+Delta = WS_real – WS_expected → misura di over/underperformance.
 
-L’obiettivo è stimare, per ogni giocatore, un **valore atteso di impatto di carriera** (in termini di Win Shares), dato ciò che è noto al momento del draft, e confrontarlo con il valore effettivamente osservato. In questo modo è possibile individuare:
+Risultati finali:
 
-- i giocatori che hanno **superato nettamente le aspettative** (overperformer),
-- quelli che hanno **deluso** rispetto alla loro posizione nel draft (underperformer o “bust”).
+Il modello individua correttamente steal storiche (Ginóbili, Marion, Divac…).
 
-In pratica:
+Identifica i principali bust (Anthony Bennett, LaRue Martin…).
 
-1. **Selezione delle feature**  
-   Sono state utilizzate come variabili esplicative (input del modello) alcune tra le seguenti informazioni, disponibili al momento del draft:
-   - posizione di pick (`Pick`),
-   - fascia di pick (`PickBand`, es. Top10 / FirstRound / SecondRound),
-   - anno del draft (`DraftYear`),
-   - tipo di provenienza (`College`, con categorie come High School, NCAA, Overseas, ecc.).
+Random Forest ottiene MAE ≈ 7 e RMSE ≈ 15, molto meglio del modello lineare.
 
-2. **Definizione del target**  
-   Il target da predire è la **Win Shares di carriera** (`WS_clean`), considerando solo i giocatori con valore calcolabile (escludendo i casi marcati come `-100` nel preprocessing).
-
-3. **Train/Test split temporale**  
-   Per simulare uno scenario realistico, il modello viene addestrato sui **draft storici** (es. 1947–2010) e valutato su draft più recenti (es. 2011–2020).  
-   In questo modo si verifica la capacità del modello di generalizzare su “anni futuri”, non visti in fase di training.
-
-4. **Modelli utilizzati e valutazione**  
-   Come modello di base viene considerata una regressione semplice (es. Linear Regression), eventualmente affiancata da un modello non lineare (es. RandomForestRegressor), con valutazione tramite metriche come:
-   - **MAE (Mean Absolute Error)**
-   - **RMSE (Root Mean Squared Error)**
-
-5. **Expected vs Real WS e analisi degli scostamenti**  
-   Una volta addestrato il modello, per ogni giocatore nel test set viene calcolato un valore di **Expected_WS**.  
-   Lo scostamento rispetto al valore reale viene misurato come:
-   \[
-   \Delta = WS_{reale} - WS_{atteso}
-   \]
-   Ordinando i giocatori in base a Δ si ottengono:
-   - una lista di **overperformer** (Δ ≫ 0), cioè giocatori che hanno reso molto più delle aspettative legate alla loro posizione nel draft,
-   - una lista di **underperformer** (Δ ≪ 0), ovvero scelte alte che non hanno ripagato l’investimento.
-
-Questa analisi collega i risultati empirici sull’NBA Draft con un approccio tipico dei **sistemi intelligenti**: si costruisce un modello predittivo basato sui dati storici e si usano i residui (errore di predizione) per interpretare la qualità delle decisioni di draft nel tempo.
-
-🔶 PARTE 2 — SISTEMA INTELLIGENTE PER TALENT SCOUT NBA
+## 🔶 PARTE 2 — SISTEMA INTELLIGENTE PER TALENT SCOUT NBA
 
 (Questa è la parte in piena linea con Sistemi Intelligenti per Internet)
 

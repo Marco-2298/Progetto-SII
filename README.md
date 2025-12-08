@@ -117,97 +117,25 @@ Esempio input:
 
 Il sistema deve restituire un ranking dei giocatori più simili al profilo richiesto.
 
-📌 Step A — Preparazione del corpus
+### 📌 Preparazione del corpus
 
-Trasformare ogni giocatore in un “documento testuale”:
-“Guardia, 40% da 3, 88% FT, 6 rimbalzi, buon difensore…”
+Per consentire al motore di ricerca di lavorare su informazioni strutturate, ogni giocatore viene trasformato in un documento testuale che descrive le sue caratteristiche principali. Questa rappresentazione include ruolo, percentuali di tiro, efficienza ai liberi, capacità di creazione offensiva, rimbalzi, difesa, metriche avanzate e ulteriori annotazioni qualitative. Un documento può dunque assumere una forma come: “Guardia, 40% da tre, 88% ai liberi, 6 rimbalzi, buon difensore, ottima efficienza offensiva”. L’intero insieme dei giocatori costruisce il corpus testuale che sarà in seguito indicizzato.
 
-Creazione del corpus JSON o DataFrame da indicizzare.
+### 📌 Step B Indicizzazione dei documenti
 
-📌 Step B — Indicizzazione (Information Retrieval)
+Una volta definito il corpus, esso viene sottoposto a un processo di indicizzazione basato sugli strumenti classici dell’Information Retrieval, come TF-IDF o BM25. La pipeline prevede la tokenizzazione del testo, la rimozione delle stopword, la normalizzazione linguistica, la creazione del vocabolario e infine la generazione delle matrici vettoriali che rappresentano ogni documento. L’indice risultante è persistente, efficiente e pronto per essere interrogato da qualsiasi query dello scout.
 
-Utilizzo di BM25 o TF-IDF per l’indicizzazione dei profili.
+### 📌 Step C Comprensione della query naturale
 
-Costruzione di un indice persistente.
+Quando l’utente fornisce una descrizione del tipo “Mi serve un lungo forte a rimbalzo e stoppate”, il sistema analizza la frase per individuarne le parole chiave e interpretarli come concetti tecnici. I termini rilevanti vengono quindi mappati automaticamente sulle feature numeriche corrispondenti: ad esempio “tiratore da tre” è collegato alla statistica 3P%, “liberi” al FT%, “rimbalzista” ai rimbalzi offensivi e difensivi, “playmaker” agli assist, “difensore” alle metriche difensive come BLK, STL o Defensive WS. In questa fase vengono anche assegnati pesi ai vari concetti, così da modellare l’importanza relativa delle diverse caratteristiche.
 
-📌 Step C — Analisi della query naturale
+### 📌 Step D — Ranking dei giocatori
 
-Parsing testuale dell’input utente.
+Dopo aver interpretato la query e pesato le feature, il sistema confronta il profilo richiesto con tutti i giocatori presenti nell’indice. La similarità viene calcolata combinando sia il punteggio IR (come la coseno-similarità dei vettori TF-IDF o lo score BM25) sia l’allineamento numerico delle statistiche pesate. Il risultato è un ranking finale dei giocatori più compatibili con il profilo cercato. Oltre a presentare la lista ordinata, il sistema può anche generare una breve spiegazione che giustifica perché un determinato giocatore si trova in cima alla classifica, evidenziando le caratteristiche maggiormente allineate alla query.
 
-Mappatura delle parole chiave su attributi giocatore:
+### 📌 Step E — Interfaccia per lo scout
 
-“tiratore” → 3P%
-
-“rimbalzista” → REB
-
-“playmaker” → AST
-
-“difensore” → Defensive WS
-
-Applicazione di pesi alle feature.
-
-📌 Step D — Ranking dei giocatori
-
-Similarità tra query e documenti indicizzati → ranking finale.
-
-Output: top‐N giocatori più compatibili.
-
-Possibilità di spiegazione: “questo giocatore è top-1 perché…”
-
-📌 Step E — Interfaccia da Talent Scout
-
-Interfaccia a riga di comando o piccola app Python.
-
-L’utente inserisce un profilo testuale.
-
-Il sistema restituisce la “shortlist” dei giocatori ideali.
-
-📌 Step F — Conclusioni
-
-Confronto tra Parte 1 (analisi scientifica) e Parte 2 (sistema intelligente).
-
-Possibili estensioni:
-
-integrazione con LLM per interpretazioni più evolute,
-
-sistema ibrido tra content-based e rule-based,
-
-profili per team (non solo per singoli giocatori).
-
-
-
--Esecuzione del progetto-
-
-1) Attivare ambiente virtuale
-2) Installa i requirements.txt
-3) python -m pip install ipykernel
-
--
-
-Passo 2 — Crea ambiente con Python 3.11
-Nel terminale della cartella del progetto:
-python3.11 -m venv env
-Se non va, prova:
-python3 -m venv env
-(o anche)
-py -3.11 -m venv env
-Passo 3 — Attiva l’ambiente
-Mac / Linux:
-source env/bin/activate
-Windows:
-env\Scripts\activate
-Vedrai (env) comparire.
-Passo 4 — Installa tutto
-pip install --upgrade pip
-pip install pandas numpy matplotlib seaborn jupyter ipykernel
-Passo 5 — Seleziona il kernel in VS Code
-Apri notebook .ipynb
-In alto a destra → click su kernel → Select Kernel
-Scegli quello che termina con:
-/env/bin/python
-🔥 A questo punto il tuo notebook funzionerà al 100%.
-
-
+Il sistema è utilizzabile tramite una semplice interfaccia a riga di comando o attraverso un notebook interattivo. Lo scout inserisce liberamente una descrizione del giocatore desiderato e il sistema restituisce automaticamente una shortlist dei migliori candidati, con la possibilità di visualizzare anche i punteggi di similarità o altre informazioni utili alla decisione. In questo modo, il motore di ricerca diventa un vero strumento di supporto alle attività di scouting.
 
 
 - PDF Riferimento per lo svolgimento del progetto -
